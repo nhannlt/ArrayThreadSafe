@@ -13,6 +13,8 @@
 - (void)addObject:(id)anObject;
 - (id) getObjectAtIndex:(NSInteger)index;
 - (void)replaceObjectWithObjectAtIndex:(id)anObject AtIndex:(NSInteger)index;
+- (void)setObjectWithIndex:(id)anObject AtIndex:(NSInteger)index;
 - (NSMutableArray*)getAllObject;
 - (void)removeAllObject;
+- (void)removObjectAtIndex:(NSInteger)index;
 @end

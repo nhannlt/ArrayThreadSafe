@@ -32,50 +32,75 @@
 
 
 - (void) addObject:(id) anObject{
-
-    if (anObject) { // 1
-        dispatch_barrier_async(queue, ^{ // 2
-            [arrayList addObject:anObject]; // 3
-           
+    
+    if (anObject) {
+        
+        dispatch_barrier_async(queue, ^{
+            [arrayList addObject:anObject];
+            //NSLog(@"Add Object: %d",[anObject integerValue]);
         });
     }
     
 }
 - (void)replaceObjectWithObjectAtIndex:(id)anObject AtIndex:(NSInteger)index{
-
-    if (anObject) { // 1
-        dispatch_barrier_async(queue, ^{ // 2
-            [arrayList replaceObjectAtIndex:index withObject:anObject];
-            
-        });
+    
+    if (anObject) {
+        if (arrayList.count > index) {
+            dispatch_barrier_async(queue, ^{ 
+                [arrayList replaceObjectAtIndex:index withObject:anObject];
+                
+            });
+        }
     }
-
+    
 }
 
 - (id) getObjectAtIndex:(NSInteger)index{
-
-    __block id object;
-    dispatch_sync(queue, ^{
-        object = [arrayList objectAtIndex:index];
-    });
-    return object;
-
-
+    if (arrayList.count > index) {
+        __block id object;
+        dispatch_sync(queue, ^{
+            object = [arrayList objectAtIndex:index];
+            //NSLog(@"getObjectAtIndex: %i",[object integerValue]);
+        });
+        return object;
+    } else {
+        return @(0);
+    }
 }
 - (NSMutableArray*)getAllObject{
-    __block NSMutableArray *array; // 1
-    dispatch_sync(queue, ^{ // 2
-        array = [NSMutableArray arrayWithArray:arrayList]; // 3
+    __block NSMutableArray *array;
+    dispatch_sync(queue, ^{
+        array = [NSMutableArray arrayWithArray:arrayList];
     });
     return array;
 
 }
 - (void)removeAllObject{
-    dispatch_barrier_async(queue, ^{ // 2
-        [arrayList removeAllObjects]; // 3
+    dispatch_barrier_async(queue, ^{
+        [arrayList removeAllObjects];
         
     });
 
+}
+- (void)removObjectAtIndex:(NSInteger)index{
+    
+    dispatch_barrier_async(queue, ^{
+        if (arrayList.count > index) {
+        [arrayList removeObjectAtIndex:index];
+        }
+        
+    });
+    
+}
+- (void)setObjectWithIndex:(id)anObject AtIndex:(NSInteger)index{
+    if (anObject) {
+        if (arrayList.count > index) {
+            dispatch_barrier_async(queue, ^{
+                arrayList[index] = anObject;
+                
+            });
+        }
+    }
 }
 
 @end
